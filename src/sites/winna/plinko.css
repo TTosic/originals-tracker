@@ -1,0 +1,456 @@
+/* Winna Plinko Tracker — panel styles (positioning is set inline by content.js).
+   Palette mirrors the Keno Tracker: near-black navy, glossy gradient surfaces,
+   cyan accents. Multiplier pills are tinted with each bucket's own colour. */
+
+#plinko-tracker-root {
+  position: fixed;
+  z-index: 2147483646;
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #e8eef6;
+  box-sizing: border-box;
+}
+#plinko-tracker-root * {
+  box-sizing: border-box;
+}
+#plinko-tracker-root button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Collapsed launcher tab (top-right) */
+#plinko-tracker-root.pt-closed {
+  top: 96px;
+  right: 0;
+  width: auto;
+  height: auto;
+}
+#pt-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: linear-gradient(180deg, #12202c 0%, #0c1620 100%);
+  border: 1px solid #1f3a4d;
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  color: #7fd8ff;
+  font-size: 17px;
+  padding: 11px 9px;
+  box-shadow: -2px 2px 14px rgba(0, 0, 0, 0.5);
+}
+#pt-open span {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+#pt-open:hover {
+  background: linear-gradient(180deg, #163040 0%, #0e1a26 100%);
+}
+
+/* Panel card */
+#plinko-tracker-panel {
+  position: relative; /* anchors the resize handle */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #0b131c 0%, #080e15 100%);
+  border: 1px solid #182838;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Resize handle (bottom-left): drag to resize, double-click to reset. */
+.pt-resize {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  z-index: 6;
+  cursor: nesw-resize;
+  border-left: 2px solid #557086;
+  border-bottom: 2px solid #557086;
+  border-bottom-left-radius: 10px;
+  opacity: 0.4;
+  touch-action: none;
+}
+.pt-resize:hover {
+  opacity: 1;
+  border-color: #38bdf8;
+}
+
+#plinko-tracker-root.pt-float #plinko-tracker-panel {
+  max-height: 80vh;
+  box-shadow: 0 16px 46px rgba(0, 0, 0, 0.6);
+}
+#plinko-tracker-root.pt-docked #plinko-tracker-panel {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.pt-body {
+  flex: 1;
+  min-height: 0; /* allow the list to scroll inside the fixed-height panel */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 12px 16px;
+  display: flex;
+  flex-direction: column;
+}
+.pt-body::-webkit-scrollbar {
+  width: 8px;
+}
+.pt-body::-webkit-scrollbar-thumb {
+  background: #1b2c3c;
+  border-radius: 4px;
+}
+
+/* Header */
+.pt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 12px;
+  border-bottom: 1px solid #142231;
+  background: linear-gradient(180deg, #0e1a26 0%, #0a141d 100%);
+  flex: 0 0 auto;
+}
+#plinko-tracker-root.pt-float .pt-header {
+  cursor: move;
+}
+.pt-title {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #eaf3fb;
+}
+.pt-head-btns {
+  display: flex;
+  gap: 2px;
+}
+.pt-head-btns button {
+  background: transparent;
+  border: none;
+  color: #6f93b3;
+  font-size: 14px;
+  width: 27px;
+  height: 27px;
+  border-radius: 7px;
+}
+.pt-head-btns button:hover {
+  background: #15293b;
+  color: #cfeaff;
+}
+
+/* Tile-like surface shared by stat boxes / rows */
+.pt-stats > div,
+.pt-lasthit,
+.pt-mult,
+.pt-settings {
+  background: linear-gradient(180deg, #15222f 0%, #0e1822 100%);
+  border: 1px solid #21384a;
+  box-shadow: inset 0 1px 0 rgba(120, 190, 230, 0.05);
+}
+
+.pt-stats {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.pt-stats > div {
+  flex: 1;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pt-k {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #5f7c94;
+}
+.pt-v {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pt-lasthit {
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pt-lasthit .pt-k {
+  flex: 1;
+}
+
+/* Settings (start nonce) */
+.pt-settings {
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pt-settings label {
+  font-size: 11.5px;
+  color: #b4cbe0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.pt-settings label > span {
+  flex: 1;
+}
+.pt-settings b {
+  color: #8fb6d4;
+  font-weight: 700;
+}
+.pt-settings input[type="number"] {
+  background: #0a141d;
+  border: 1px solid #244258;
+  color: #eaf3fb;
+  border-radius: 7px;
+  padding: 5px 7px;
+  width: 84px;
+  font-size: 12px;
+}
+.pt-settings input[type="checkbox"] {
+  accent-color: #2f9be0;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+/* Action buttons */
+.pt-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.pt-actions button {
+  flex: 1;
+  background-color: #142433;
+  border: 1px solid #244258;
+  color: #cfe6f6;
+  border-radius: 9px;
+  padding: 8px 6px;
+  font-size: 11.5px;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+.pt-actions button:hover {
+  background-color: #1b3145;
+  border-color: #2f5a76;
+}
+
+.pt-status {
+  font-size: 12px;
+  color: #ffd166;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.15s ease;
+}
+.pt-status.pt-status-show {
+  height: 18px;
+  margin-bottom: 6px;
+}
+
+/* Multiplier rows */
+.pt-list-head {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #5f7c94;
+  margin: 2px 2px 6px;
+}
+.pt-mult-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pt-mult {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  padding: 8px 10px;
+  border-left-width: 3px !important;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.pt-mult-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pt-pill {
+  flex: 0 0 auto;
+  min-width: 46px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-align: center;
+  background: #23364a;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+}
+.pt-mult-main {
+  flex: 1;
+  min-width: 0;
+}
+.pt-mult-meta {
+  font-size: 10.5px;
+  color: #5f7c94;
+}
+.pt-share {
+  font-size: 10.5px;
+  color: #6f8597;
+  margin-top: 1px;
+}
+.pt-count {
+  font-size: 15px;
+  font-weight: 800;
+  color: #8fb6d4;
+  min-width: 30px;
+  text-align: right;
+}
+.pt-caret {
+  background: transparent;
+  border: none;
+  color: #6f93b3;
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  flex: 0 0 auto;
+}
+.pt-caret:hover {
+  background: #16294a;
+  color: #cfeaff;
+}
+
+/* Rare / unhit emphasis: a high-multiplier row that has been hit glows. */
+.pt-mult.pt-hit .pt-count {
+  color: #eaf3fb;
+}
+.pt-mult.pt-unhit {
+  opacity: 0.62;
+}
+.pt-mult.pt-unhit .pt-count {
+  color: #4a6276;
+}
+
+.pt-nonces {
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid #1c2c3d;
+  font-size: 11px;
+  color: #9db4dd;
+  line-height: 1.55;
+  word-break: break-word;
+  max-height: 150px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.pt-nonces b {
+  color: #cfe6f6;
+  font-weight: 700;
+}
+
+.pt-mult.pt-flash {
+  animation: pt-flash 0.9s ease;
+}
+@keyframes pt-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.85);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(56, 189, 248, 0);
+  }
+}
+
+.pt-empty {
+  font-size: 12px;
+  color: #547192;
+  padding: 16px 12px;
+  text-align: center;
+  line-height: 1.55;
+}
+
+/* Styled confirm dialog — covers the panel, matches the tracker theme
+   (mirrors the Keno Tracker's kt-confirm). */
+.pt-confirm {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 9, 14, 0.62);
+  backdrop-filter: blur(2px);
+  border-radius: 14px; /* match the panel card corners */
+}
+.pt-confirm-card {
+  width: calc(100% - 36px);
+  max-width: 260px;
+  background: linear-gradient(180deg, #101d29 0%, #0b141d 100%);
+  border: 1px solid #2c4a61;
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+  padding: 14px;
+  animation: pt-confirm-in 0.14s ease;
+}
+@keyframes pt-confirm-in {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.pt-confirm-msg {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #d4e6f6;
+  line-height: 1.45;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.pt-confirm-btns {
+  display: flex;
+  gap: 8px;
+}
+.pt-confirm-btns button {
+  flex: 1;
+  border-radius: 9px;
+  padding: 8px 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.pt-confirm-no {
+  background-color: #142433;
+  border: 1px solid #244258;
+  color: #cfe6f6;
+}
+.pt-confirm-no:hover {
+  background-color: #1b3145;
+  border-color: #2f5a76;
+}
+.pt-confirm-yes {
+  background: linear-gradient(180deg, #21b1f0 0%, #0e95da 100%);
+  border: 1px solid #38c0fb;
+  color: #022033;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.pt-confirm-yes:hover {
+  background: linear-gradient(180deg, #34bdf8 0%, #16a0e6 100%);
+}

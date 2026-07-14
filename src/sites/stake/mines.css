@@ -1,0 +1,884 @@
+/* Stake Mines Tracker — themed to match the Stake keno tracker (same palette,
+   width 332, docked into Stake's .game-layout by mines.js). Namespaced sm-*. */
+
+#stake-mines-root {
+  position: fixed;
+  top: 84px;
+  right: 12px;
+  z-index: 2147483646;
+  width: 365px;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+#stake-mines-root * {
+  box-sizing: border-box;
+}
+#stake-mines-root button {
+  font-family: inherit;
+  cursor: pointer;
+}
+#stake-mines-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #0f212e;
+  border: 1px solid #2f4553;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Header */
+.sm-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 11px;
+  background: #1a2c38;
+  border-bottom: 1px solid #2f4553;
+  flex: 0 0 auto;
+}
+.sm-title {
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 0.2px;
+  color: #ffffff;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.sm-nonce {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 700;
+  color: #8fa3b0;
+  background: #0f212e;
+  border: 1px solid #2f4553;
+  border-radius: 5px;
+  padding: 2px 6px;
+}
+.sm-chasing {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #8fa3b0;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.sm-chasing-lbl {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.sm-chasing b {
+  flex: 0 0 auto;
+  color: #4391e7;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.sm-head-btns {
+  display: flex;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+.sm-head-btns button {
+  background: transparent;
+  border: none;
+  color: #b1bad3;
+  font-size: 14px;
+  width: 27px;
+  height: 27px;
+  border-radius: 7px;
+}
+.sm-head-btns button:hover {
+  background: #2f4553;
+  color: #ffffff;
+}
+
+/* Body */
+.sm-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 7px 7px 9px;
+  scrollbar-width: none;
+}
+.sm-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Shared raised card */
+.sm-stats > div,
+.sm-sel-wrap,
+.sm-config {
+  background: #213743;
+  border: 1px solid transparent;
+}
+
+.sm-stats {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+.sm-stats > div {
+  flex: 1;
+  min-width: 0;
+  border-radius: 6px;
+  padding: 6px 8px;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  justify-content: center;
+}
+.sm-k {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #8fa3b0;
+  line-height: 1.15;
+}
+.sm-v {
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sm-sel-wrap {
+  border-radius: 6px;
+  padding: 7px 8px;
+  margin-bottom: 5px;
+}
+.sm-sel-wrap .sm-k {
+  display: block;
+  margin-bottom: 6px;
+}
+.sm-selnote {
+  color: #557086;
+  font-size: 11px;
+}
+.sm-cfgcard {
+  cursor: help;
+}
+.sm-warn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: #c79233;
+  color: #1a2c38;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  cursor: help;
+  vertical-align: middle;
+}
+
+/* Mini boards */
+.sm-board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  width: 130px;
+}
+.sm-board-sm {
+  width: 52px;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+.sm-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 3px;
+  background: #0f212e;
+  border: 1px solid #2a4152;
+}
+.sm-cell.sm-pick {
+  background: #1475e1;
+  border-color: #3a8bec;
+}
+.sm-cell.sm-gem {
+  background: #0f212e;
+  border-color: #2a4152;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sm-cell.sm-gem svg {
+  width: 82%;
+  height: 82%;
+  display: block;
+}
+
+/* Actions */
+.sm-actions {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+.sm-actions button {
+  flex: 1;
+  background-color: #2f4553;
+  border: none;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 7px 5px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: filter 0.12s ease, background-color 0.12s ease;
+}
+.sm-actions button:hover {
+  background-color: #557086;
+}
+.sm-actions .sm-primary {
+  background: #1475e1;
+}
+.sm-actions .sm-primary:hover {
+  filter: brightness(1.1);
+  background: #1475e1;
+}
+
+/* Config rows */
+.sm-config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sm-config {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  padding: 6px 8px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.sm-config:not(.sm-green):not(.sm-goldhit):hover {
+  background: #24394a;
+}
+.sm-config-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.sm-config.sm-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: #1475e1;
+}
+.sm-config.sm-goldhit {
+  background: #3d2f06;
+  border-color: #f5c518;
+  box-shadow: 0 0 12px rgba(245, 197, 24, 0.25);
+}
+.sm-config.sm-goldhit .sm-config-mult {
+  color: #ffd23f;
+  text-shadow: 0 0 8px rgba(255, 210, 63, 0.5);
+}
+.sm-config.sm-goldhit .sm-badge {
+  background: #e0a813;
+  color: #3d2f06;
+}
+.sm-config.sm-green {
+  background: #0e2c1c;
+  border-color: #1f8a48;
+}
+.sm-config.sm-green .sm-config-mult {
+  color: #4ef08a;
+}
+.sm-config-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sm-config-top {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sm-config-mult {
+  flex: 0 0 auto;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.sm-config-dim {
+  font-size: 9.5px;
+  color: #557086;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sm-config-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 9.5px;
+  color: #8fa3b0;
+  white-space: nowrap;
+}
+.sm-meta-txt {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sm-dry {
+  flex: 0 0 auto;
+  padding-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+  color: #95a8b5;
+}
+.sm-config-side {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sm-badge {
+  flex: 0 0 auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #1f9a4f;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sm-x {
+  background: transparent;
+  border: none;
+  color: #557086;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 3px;
+}
+.sm-x:hover {
+  color: #ff8a9b;
+}
+.sm-flash {
+  animation: sm-flash 0.9s ease;
+}
+@keyframes sm-flash {
+  0% {
+    background: #17492f;
+  }
+  100% {
+    background: #213743;
+  }
+}
+.sm-empty {
+  color: #557086;
+  padding: 12px 6px;
+  text-align: center;
+  line-height: 1.5;
+}
+.sm-empty b {
+  color: #b9c7d1;
+}
+
+/* Status toast */
+.sm-status {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 12px;
+  z-index: 5;
+  background: #213743;
+  border: 1px solid #2f4553;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffd166;
+  text-align: center;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.sm-status.sm-status-on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Confirm / prompt dialog — matched to the keno tracker's kt-confirm */
+.sm-confirm {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 9, 14, 0.62);
+  backdrop-filter: blur(2px);
+  border-radius: 6px;
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.sm-confirm-card {
+  width: calc(100% - 36px);
+  max-width: 260px;
+  background: #1a2c38;
+  border: 1px solid #2f4553;
+  border-radius: 8px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+  padding: 14px;
+  animation: sm-confirm-in 0.14s ease;
+}
+@keyframes sm-confirm-in {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.sm-confirm-msg {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #d5e2ea;
+  line-height: 1.45;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.sm-confirm-input {
+  width: 100%;
+  height: 90px;
+  resize: none;
+  background: #0f212e;
+  border: 1px solid #2f4553;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-family: Consolas, Menlo, monospace;
+  padding: 7px 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+.sm-confirm-input:focus {
+  outline: none;
+  border-color: #1475e1;
+}
+.sm-confirm-btns {
+  display: flex;
+  gap: 8px;
+}
+.sm-confirm-btns button {
+  flex: 1;
+  border-radius: 4px;
+  padding: 8px 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+.sm-confirm-no {
+  background-color: #2f4553;
+  color: #ffffff;
+}
+.sm-confirm-no:hover {
+  background-color: #557086;
+}
+.sm-confirm-yes {
+  background: #1475e1;
+  color: #ffffff;
+}
+.sm-confirm-yes:hover {
+  filter: brightness(1.1);
+}
+
+/* Hit notification card — copied from keno's kt-hitfx */
+.sm-hitfx {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 48px;
+  z-index: 64;
+  pointer-events: none;
+  background: #213743;
+  border: 1px solid #2f4553;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: sm-hitfx-in 0.18s ease;
+}
+@keyframes sm-hitfx-in {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.sm-hitfx-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 8px 7px 13px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #8fa3b0;
+  border-bottom: 1px solid #2f4553;
+}
+.sm-hitfx-eye {
+  pointer-events: auto;
+  background: transparent;
+  border: none;
+  color: #8fa3b0;
+  width: 26px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.sm-hitfx-eye:hover {
+  color: #00e701;
+  background: rgba(255, 255, 255, 0.06);
+}
+.sm-hitfx-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-left: 4px solid transparent;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+.sm-hitfx-row + .sm-hitfx-row {
+  border-top: 1px solid #2f4553;
+}
+.sm-hitfx-chip {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.sm-hitfx-mult {
+  flex: 0 0 auto;
+}
+.sm-hitfx-meta {
+  font-size: 10px;
+  font-weight: 600;
+  color: #8fa3b0;
+  margin-left: auto;
+}
+
+/* Drag-to-reorder (manual sort) */
+.sm-config[draggable="true"] {
+  cursor: grab;
+}
+.sm-config.sm-dragging {
+  opacity: 0.45;
+  cursor: grabbing;
+}
+.sm-drop-line {
+  height: 2px;
+  margin: 1px 2px;
+  border-radius: 2px;
+  background: #1475e1;
+  box-shadow: 0 0 6px rgba(20, 117, 225, 0.8);
+  pointer-events: none;
+}
+
+/* Resize handle (bottom-left corner): drag left = wider, drag down = taller */
+.sm-resize {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  z-index: 6;
+  cursor: nesw-resize;
+  border-left: 2px solid #557086;
+  border-bottom: 2px solid #557086;
+  border-bottom-left-radius: 6px;
+  opacity: 0.45;
+  touch-action: none;
+}
+.sm-resize:hover {
+  opacity: 1;
+  border-color: #b1bad3;
+}
+
+/* Settings popup */
+#sm-pop {
+  position: absolute;
+  z-index: 66;
+  min-width: 222px;
+  max-width: 300px;
+  background: #1a2c38;
+  border: 1px solid #2f4553;
+  border-radius: 8px;
+  padding: 9px 10px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  color: #ffffff;
+}
+#sm-pop * {
+  box-sizing: border-box;
+}
+/* Seed checker card — board on the left, info fills the width on the right */
+.sm-orc-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sm-orc-board {
+  flex: 0 0 auto;
+}
+.sm-orc-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sm-orc-line1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sm-orc-till {
+  font-size: 10px;
+  color: #7f93a2;
+}
+.sm-pop-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b1bad3;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+.sm-set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid #2f4553;
+}
+.sm-set-label {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #557086;
+}
+.sm-switch {
+  flex: 0 0 auto;
+  position: relative;
+  width: 34px;
+  height: 18px;
+  border: none;
+  border-radius: 9px;
+  padding: 0;
+  cursor: pointer;
+  background: #2f4553;
+  transition: background 0.2s ease;
+}
+.sm-switch.sm-switch-on {
+  background: #1475e1;
+}
+.sm-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sm-switch-on .sm-knob {
+  left: 18px;
+}
+
+/* Sort chips (in #sm-pop) */
+.sm-pop-wins {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid #2f4553;
+}
+.sm-win {
+  flex: 1;
+  background: #0f212e;
+  border: 1px solid #2f4553;
+  color: #8fa3b0;
+  border-radius: 4px;
+  padding: 3px 0;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.sm-win:hover {
+  color: #ffffff;
+  border-color: #557086;
+}
+.sm-win.sm-win-on {
+  background: rgba(20, 117, 225, 0.16);
+  border-color: #1475e1;
+  color: #4391e7;
+}
+.sm-pop-foot {
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid #2f4553;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #557086;
+  text-align: center;
+}
+
+/* Caret + info in the config side */
+.sm-caret {
+  background: transparent;
+  border: none;
+  color: #b1bad3;
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.sm-caret:hover {
+  background: #16294a;
+  color: #ffffff;
+}
+.sm-info {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #2f4553;
+  color: #8fa3b0;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+.sm-info:hover {
+  border-color: #1475e1;
+  color: #4391e7;
+  background: rgba(20, 117, 225, 0.08);
+}
+
+/* Expandable hit history */
+.sm-hits {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid #1c2c3d;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sm-hit-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: #b1bad3;
+  padding: 1px 2px;
+}
+.sm-hit-n {
+  color: #4ef08a;
+}
+.sm-hit-x {
+  color: #4ef08a;
+  font-weight: 700;
+}
+.sm-hit-row.sm-hit-gold .sm-hit-n,
+.sm-hit-row.sm-hit-gold .sm-hit-x {
+  color: #ffd23f;
+}
+
+/* Odds tooltip */
+/* Hover tooltip box (warning + info) */
+#sm-tip {
+  position: fixed;
+  display: none;
+  z-index: 2147483647;
+  max-width: 232px;
+  background: #1a2c38;
+  border: 1px solid #2f4553;
+  border-radius: 8px;
+  padding: 9px 11px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #b1bad3;
+  white-space: pre-line;
+  pointer-events: none;
+}
+.sm-info-i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #2f4553;
+  color: #8fa3b0;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: help;
+  vertical-align: middle;
+}
+.sm-info-i:hover {
+  border-color: #1475e1;
+  color: #4391e7;
+}
+
+/* Export/import textarea */
+.sm-ta {
+  width: 100%;
+  height: 92px;
+  resize: none;
+  margin-bottom: 12px;
+  background: #0b1a24;
+  border: 1px solid #2f4553;
+  border-radius: 6px;
+  color: #e6edf3;
+  font-family: "Inter", monospace;
+  font-size: 11px;
+  padding: 8px;
+  box-sizing: border-box;
+}

@@ -1,0 +1,346 @@
+/* Winna Mines Calculator — panel styles. Copies the Keno/Plinko tracker theme
+   token-for-token (same header, buttons, glossy tile surfaces, type scale).
+   Positioning (dock vs float, width/height) is set inline by mines.js. */
+
+#mines-calc-root {
+  position: fixed;
+  z-index: 2147483646;
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #e8eef6;
+  box-sizing: border-box;
+}
+#mines-calc-root * {
+  box-sizing: border-box;
+}
+#mines-calc-root button {
+  font-family: inherit;
+  cursor: pointer;
+}
+#mines-calc-root.mc-closed {
+  display: none;
+}
+
+/* Panel card fills the JS-sized root */
+#mines-calc-panel {
+  position: relative; /* anchors the resize handle */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #0b131c 0%, #080e15 100%);
+  border: 1px solid #182838;
+  border-radius: 14px;
+  overflow: hidden;
+}
+#mines-calc-root.mc-float #mines-calc-panel {
+  max-height: 80vh;
+  box-shadow: 0 16px 46px rgba(0, 0, 0, 0.6);
+}
+#mines-calc-root.mc-docked #mines-calc-panel {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Header (drag handle in float mode) */
+.mc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 12px;
+  border-bottom: 1px solid #142231;
+  background: linear-gradient(180deg, #0e1a26 0%, #0a141d 100%);
+  flex: 0 0 auto;
+}
+#mines-calc-root.mc-float .mc-header {
+  cursor: move;
+}
+.mc-title {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #eaf3fb;
+}
+.mc-head-btns {
+  display: flex;
+  gap: 2px;
+}
+.mc-head-btns button {
+  background: transparent;
+  border: none;
+  color: #6f93b3;
+  font-size: 14px;
+  width: 27px;
+  height: 27px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mc-head-btns button:hover {
+  background: #15293b;
+  color: #cfeaff;
+}
+
+/* Scrolling body — 8px rhythm between blocks (matches keno/plinko) */
+.mc-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 12px 16px;
+  display: flex;
+  flex-direction: column;
+}
+.mc-body > * {
+  margin-bottom: 8px;
+}
+.mc-body > *:last-child {
+  margin-bottom: 0;
+}
+.mc-body::-webkit-scrollbar {
+  width: 8px;
+}
+.mc-body::-webkit-scrollbar-thumb {
+  background: #1b2c3c;
+  border-radius: 4px;
+}
+
+.mc-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #5f7c94;
+  margin-bottom: 5px;
+}
+
+/* Glossy tile surface shared by stat-like boxes (the keno/plinko look) */
+.mc-result,
+.mc-step,
+.mc-chip,
+.mc-bet {
+  background: linear-gradient(180deg, #15222f 0%, #0e1822 100%);
+  border: 1px solid #21384a;
+  box-shadow: inset 0 1px 0 rgba(120, 190, 230, 0.05);
+}
+
+/* Grid-size chips */
+.mc-chips {
+  display: flex;
+  gap: 6px;
+}
+.mc-chip {
+  flex: 1;
+  padding: 7px 0;
+  border-radius: 10px;
+  color: #9fb6c9;
+  font-size: 13px;
+  font-weight: 700;
+}
+.mc-chip:hover {
+  border-color: #2e4d66;
+  color: #cfeaff;
+}
+.mc-chip.on {
+  background: linear-gradient(180deg, #123247 0%, #0c2233 100%);
+  border-color: #38bdf8;
+  color: #7fd8ff;
+}
+
+/* Mines / Gems steppers */
+.mc-two {
+  display: flex;
+  gap: 8px;
+}
+.mc-fieldcol {
+  flex: 1;
+}
+.mc-step {
+  display: flex;
+  align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.mc-stepbtn {
+  width: 30px;
+  background: rgba(13, 22, 33, 0.5);
+  border: none;
+  color: #8fb6d4;
+  font-size: 16px;
+  font-weight: 700;
+}
+.mc-stepbtn:hover {
+  background: #15293b;
+  color: #cfeaff;
+}
+.mc-num {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: #eaf3fb;
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+}
+
+/* Result block */
+.mc-result {
+  border-radius: 10px;
+  padding: 10px 11px;
+}
+.mc-multbox {
+  text-align: center;
+  padding: 2px 0 9px;
+  border-bottom: 1px solid #1b2c3c;
+  margin-bottom: 9px;
+}
+.mc-mult {
+  font-size: 27px;
+  font-weight: 800;
+  color: #ffd23f;
+  letter-spacing: 0.5px;
+}
+.mc-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mc-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+}
+.mc-stat span {
+  color: #7f9bb3;
+}
+.mc-stat b {
+  color: #eaf3fb;
+  font-weight: 700;
+}
+.mc-payrow b {
+  color: #5be39a;
+  font-size: 14px;
+}
+
+/* Bet field — label row (Bet + source hint) above a full-width input, so it
+   lines up with the Grid/Mines/Gems fields instead of floating inline. */
+.mc-bethead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.mc-bethead .mc-label {
+  margin-bottom: 0;
+}
+.mc-bet {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #eaf3fb;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+}
+.mc-bet:focus {
+  border-color: #38bdf8;
+}
+.mc-betnote {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #5f7c94;
+}
+
+/* Ladder table */
+.mc-tabletoggle {
+  background: transparent;
+  border: 1px dashed #21384a;
+  color: #6f93b3;
+  border-radius: 8px;
+  padding: 7px 0;
+  font-size: 11px;
+  font-weight: 600;
+  width: 100%;
+}
+.mc-tabletoggle:hover {
+  border-color: #38bdf8;
+  color: #cfeaff;
+}
+.mc-table {
+  border: 1px solid #21384a;
+  border-radius: 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: 46vh; /* long ladders (e.g. 64-grid) scroll instead of overflowing */
+}
+.mc-table::-webkit-scrollbar {
+  width: 7px;
+}
+.mc-table::-webkit-scrollbar-thumb {
+  background: #1b2c3c;
+  border-radius: 4px;
+}
+.mc-thead {
+  position: sticky;
+  top: 0;
+}
+.mc-trow {
+  display: grid;
+  grid-template-columns: 38px 1fr 1fr 1fr;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-bottom: 1px solid #0f1c28;
+  cursor: pointer;
+}
+.mc-trow span:nth-child(n + 2) {
+  text-align: right;
+}
+.mc-trow:last-child {
+  border-bottom: none;
+}
+.mc-thead {
+  background: linear-gradient(180deg, #15222f 0%, #0e1822 100%);
+  color: #5f7c94;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  font-size: 9.5px;
+  font-weight: 700;
+  cursor: default;
+}
+.mc-trow:not(.mc-thead):hover {
+  background: #0e1d2a;
+}
+.mc-trow.on {
+  background: linear-gradient(180deg, #123247 0%, #0c2233 100%);
+  color: #7fd8ff;
+}
+.mc-trow.on span {
+  color: #9fe0ff;
+}
+
+/* Resize handle (bottom-left): drag to resize, double-click to reset. */
+.mc-resize {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  z-index: 6;
+  cursor: nesw-resize;
+  border-left: 2px solid #557086;
+  border-bottom: 2px solid #557086;
+  border-bottom-left-radius: 10px;
+  opacity: 0.4;
+  touch-action: none;
+}
+.mc-resize:hover {
+  opacity: 1;
+  border-color: #38bdf8;
+}

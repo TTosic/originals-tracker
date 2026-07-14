@@ -1,0 +1,1335 @@
+/* Thrill Keno Tracker — panel styles (positioning is set inline by content.js).
+   Palette matched to thrill.com's keno board: a dark slate shell
+   (#1a1e2d → #141826) carrying #202433 fields with a soft top sheen,
+   mint-green actions (#59e9ac, like PLAY / WALLET / active gem tiles),
+   red losses, soft gray-blue secondary text. */
+
+
+#keno-tracker-root {
+  position: fixed;
+  z-index: 2147483646;
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #f2f5fa;
+  box-sizing: border-box;
+}
+#keno-tracker-root * {
+  box-sizing: border-box;
+  scrollbar-width: none; /* scroll without scrollbars (Firefox) */
+}
+#keno-tracker-root *::-webkit-scrollbar {
+  display: none; /* scroll without scrollbars (Chrome) */
+}
+#keno-tracker-root button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Collapsed launcher tab (top-right) */
+#keno-tracker-root.kt-closed {
+  top: 96px;
+  right: 0;
+  width: auto;
+  height: auto;
+}
+#kt-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: linear-gradient(180deg, #1d2232 0%, #161a28 100%);
+  border: 1px solid #2b3148;
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  color: #59e9ac;
+  font-size: 17px;
+  padding: 11px 9px;
+  box-shadow: -2px 2px 14px rgba(0, 0, 0, 0.5);
+}
+#kt-open span {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+#kt-open:hover {
+  background: linear-gradient(180deg, #2a3349 0%, #1d2436 100%);
+}
+
+/* Panel card */
+#keno-tracker-panel {
+  position: relative; /* anchors the resize handle */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* darker shell — the #202433 fields sit on top of this */
+  background: linear-gradient(180deg, #1a1e2d 0%, #141826 100%);
+  border: 1px solid #2b3148;
+  border-radius: 42px;
+  overflow: hidden;
+}
+
+/* Resize handle (bottom-left): drag to resize, double-click to reset.
+   A corner bracket that follows the panel's 42px curve, Thrill mint. */
+.kt-resize {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 32px;
+  height: 32px;
+  z-index: 8;
+  cursor: nesw-resize;
+  opacity: 0.5;
+  touch-action: none;
+  /* clips the 42px arc to this box: the visible bracket becomes the short
+     middle sweep hugging the corner, and the drag zone matches what you see */
+  overflow: hidden;
+  transition: opacity 0.12s ease;
+}
+.kt-resize::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 42px;
+  height: 42px;
+  border-left: 2px solid #6c7894;
+  border-bottom: 2px solid #6c7894;
+  /* flush with the panel corner: 0 inset + 42px arc = the panel radius, so
+     the bracket lies directly on the edge. (Border-only ::before, and no
+     box-shadow — a shadow on this quarter-arc box renders as a dark "pizza
+     slice" over the corner.) */
+  border-bottom-left-radius: 42px;
+  transition: border-color 0.12s ease;
+}
+.kt-resize:hover {
+  opacity: 1;
+}
+.kt-resize:hover::before {
+  border-color: #59e9ac;
+}
+
+/* Config being dragged to reorder */
+.kt-config[draggable="true"] {
+  cursor: grab;
+}
+.kt-config.kt-dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+.kt-drop-line {
+  height: 2px;
+  margin: 1px 2px;
+  border-radius: 2px;
+  background: #59e9ac;
+  box-shadow: 0 0 6px rgba(89, 233, 172, 0.8);
+  pointer-events: none;
+}
+#keno-tracker-root.kt-float #keno-tracker-panel {
+  max-height: 80vh;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+#keno-tracker-root.kt-docked #keno-tracker-panel {
+  box-shadow: none;
+}
+.kt-body {
+  flex: 1;
+  min-height: 0; /* allow the list to scroll inside the fixed-height panel */
+  overflow-y: auto;
+  overscroll-behavior: contain; /* don't chain scroll to the page at the edges */
+  padding: 12px 14px 24px;
+  display: flex;
+  flex-direction: column;
+}
+/* Header */
+.kt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #272d40;
+  background: linear-gradient(180deg, #1d2232 0%, #1a1e2d 100%);
+  flex: 0 0 auto;
+}
+#keno-tracker-root.kt-float .kt-header {
+  cursor: move;
+}
+.kt-title {
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #f2f5fa;
+}
+.kt-crown {
+  filter: drop-shadow(0 0 5px rgba(89, 233, 172, 0.55));
+}
+.kt-nonce {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 700;
+  color: #99a3bc;
+  background: #1d2130;
+  border: 1px solid #343c56;
+  border-radius: 5px;
+  padding: 2px 6px;
+}
+.kt-head-btns {
+  display: flex;
+  gap: 2px;
+}
+.kt-head-btns button {
+  background: transparent;
+  border: none;
+  color: #99a3bc;
+  font-size: 14px;
+  width: 27px;
+  height: 27px;
+  border-radius: 999px;
+}
+.kt-head-btns button:hover {
+  background: #272d40;
+  color: #59e9ac;
+}
+
+/* Inset surface shared by stat boxes / rows — darker than the panel, the way
+   the game's bet-amount field sits inside its panel */
+.kt-stats > div,
+.kt-lastdraw,
+.kt-selection,
+.kt-config,
+.kt-settings,
+.kt-debug {
+  /* field surface: rgb(32 36 51) with a soft sheen */
+  background: linear-gradient(180deg, #242838 0%, #1d2130 100%);
+  border: 1px solid #333a52;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.kt-stats {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.kt-stats > div {
+  flex: 1;
+  border-radius: 12px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.kt-k {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #8b95ae;
+}
+.kt-v {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f2f5fa;
+}
+
+.kt-lastdraw,
+.kt-selection {
+  border-radius: 12px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.kt-draw-nums {
+  font-size: 13px;
+  color: #dde3f0;
+  word-break: break-word;
+}
+#kt-selection-nums {
+  font-size: 14px;
+  font-weight: 600;
+  color: #59e9ac;
+}
+
+/* Action buttons */
+.kt-actions {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.kt-actions-2nd {
+  margin-top: -2px;
+}
+.kt-actions-2nd button {
+  padding: 6px 6px;
+  font-size: 10.5px;
+}
+.kt-actions button {
+  flex: 1;
+  min-width: 0; /* let the row shrink — text wraps instead of overflowing */
+  background: linear-gradient(180deg, #242838 0%, #1d2130 100%);
+  border: 1px solid #343c56;
+  color: #dde3f0;
+  border-radius: 11px;
+  padding: 9px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.kt-actions button:hover {
+  background: linear-gradient(180deg, #2b3044 0%, #242838 100%);
+  border-color: #46516f;
+}
+.kt-primary {
+  background: linear-gradient(180deg, #62eeb2 0%, #43cb9c 100%) !important;
+  border: 1px solid #74ffc4 !important;
+  color: #10182a !important;
+  font-weight: 800;
+  text-shadow: none;
+}
+.kt-primary:hover {
+  background: linear-gradient(180deg, #76ffc6 0%, #51d9aa 100%) !important;
+}
+
+/* Status toast: floats over the panel bottom (OUTSIDE the scrolling body —
+   the engine renders #kt-status as a sibling of .kt-body), so it is always
+   visible regardless of list length/scroll, even collapsed. */
+.kt-status {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 65;
+  background: #262e43;
+  border: 1px solid #353f59;
+  border-radius: 14px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffd166;
+  text-align: center;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.kt-status.kt-status-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Config rows */
+.kt-config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.kt-config {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  padding: 8px 10px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.kt-config-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kt-config-main {
+  flex: 1;
+  min-width: 0;
+}
+.kt-badge {
+  flex: 0 0 auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #c93b56;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px rgba(255, 122, 145, 0.4);
+}
+.kt-badge.kt-orange {
+  background: #c47a1e;
+  box-shadow: 0 0 0 1px rgba(240, 169, 78, 0.45);
+}
+.kt-badge.kt-green {
+  background: #1fa663;
+  box-shadow: 0 0 0 1px rgba(98, 238, 178, 0.45);
+}
+.kt-caret {
+  background: transparent;
+  border: none;
+  color: #99a3bc;
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  flex: 0 0 auto;
+}
+.kt-caret:hover {
+  background: #272d40;
+  color: #f2f5fa;
+}
+.kt-hits {
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid #333d56;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 140px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.kt-hit-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 11px;
+  color: #aab4cd;
+  padding: 3px 2px;
+  border-top: 1px solid #2b3349;
+}
+.kt-hit-row:first-child {
+  border-top: none;
+}
+.kt-hit-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.kt-hit-tier {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.kt-hit-nums {
+  color: #8b95ae;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.kt-hit-nonce {
+  color: #8b95ae;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.kt-config-nums {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f2f5fa;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kt-nums {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kt-dry {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 500;
+  color: #98a2b8;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+}
+.kt-dry:empty {
+  display: none;
+}
+.kt-config-meta {
+  font-size: 10.5px;
+  color: #8b95ae;
+  margin-top: 2px;
+}
+.kt-config-ratio {
+  font-size: 14px;
+  font-weight: 800;
+  color: #aab4cd;
+  min-width: 34px;
+  text-align: center;
+}
+.kt-x {
+  background: transparent;
+  border: none;
+  color: #6c7894;
+  font-size: 15px;
+  width: 18px;
+  height: 18px;
+  padding: 0 0 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border-radius: 5px;
+}
+.kt-x:hover {
+  background: #3a2230;
+  color: #ff7a91;
+}
+
+/* Right-side stack on each row: odds ⓘ above the remove × */
+.kt-side {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.kt-info {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #46526f;
+  color: #99a3bc;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  display: inline-grid;
+  place-items: center;
+  line-height: 0; /* centre the glyph itself, not its line box */
+  text-indent: -1px; /* italic lean: nudge the optical centre back */
+  padding-bottom: 1px;
+  cursor: help;
+  user-select: none;
+}
+.kt-info:hover {
+  border-color: #59e9ac;
+  color: #59e9ac;
+  background: rgba(89, 233, 172, 0.08);
+}
+
+/* Flame next to the title — hover for hot/cold numbers */
+.kt-heat {
+  display: inline-flex;
+  align-items: center;
+  color: #59e9ac;
+  opacity: 0.85;
+  cursor: help;
+}
+.kt-heat:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(89, 233, 172, 0.65));
+}
+
+/* Shared hover popup (odds table / hot-cold grid) */
+.kt-pop {
+  position: absolute;
+  display: none;
+  z-index: 66; /* above the hit notification (64) */
+  min-width: 222px;
+  max-width: 300px;
+  /* field surface, slightly lifted — it floats above the panel */
+  background: linear-gradient(180deg, #272b3d 0%, #1f2333 100%);
+  border: 1px solid #3a4360;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  padding: 9px 10px;
+  font-size: 11px;
+}
+.kt-pop-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #59e9ac;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+.kt-pop-row {
+  display: grid;
+  grid-template-columns: 40px 52px 1fr 1.3fr;
+  gap: 6px;
+  padding: 2px 0;
+  color: #aab4cd;
+}
+.kt-pop-row span:nth-child(3),
+.kt-pop-row span:nth-child(4) {
+  text-align: right;
+  white-space: nowrap;
+}
+.kt-pop-row.kt-pop-head {
+  color: #7e88a4;
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid #333d56;
+  padding-bottom: 3px;
+  margin-bottom: 2px;
+}
+.kt-pop-row.kt-pays {
+  color: #dde3f0;
+}
+.kt-pop-row.kt-pays span:nth-child(2) {
+  color: #62eeb2;
+  font-weight: 700;
+}
+.kt-pop-empty {
+  color: #6c7894;
+}
+/* Lookback selector inside the hot/cold popup */
+.kt-pop-wins {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid #333d56;
+}
+.kt-pop-wins span {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #7e88a4;
+  margin-right: 2px;
+}
+.kt-win {
+  flex: 1;
+  background: linear-gradient(180deg, #242838 0%, #1d2130 100%);
+  border: 1px solid #343c56;
+  color: #99a3bc;
+  border-radius: 8px;
+  padding: 3px 0;
+  font-size: 10px;
+  font-weight: 600;
+}
+.kt-win:hover {
+  border-color: #4a5573;
+  color: #f2f5fa;
+}
+.kt-win.kt-win-on {
+  background: rgba(89, 233, 172, 0.12);
+  border-color: #59e9ac;
+  color: #59e9ac;
+}
+.kt-set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid #333d56;
+}
+.kt-set-label {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #7e88a4;
+  line-height: 1.3;
+}
+.kt-switch {
+  flex: 0 0 auto;
+  position: relative;
+  width: 34px;
+  height: 18px;
+  border: none;
+  border-radius: 9px;
+  padding: 0;
+  cursor: pointer;
+  background: #3a4258;
+  transition: background 0.2s ease;
+}
+.kt-switch.kt-switch-on {
+  background: #59e9ac;
+}
+.kt-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.kt-switch-on .kt-knob {
+  left: 18px;
+}
+
+/* Current window count shown beside the flame */
+.kt-heat-n {
+  font-style: normal;
+  font-size: 9px;
+  font-weight: 700;
+  color: #55c5a4;
+  margin-left: 2px;
+  letter-spacing: 0.3px;
+}
+.kt-heat:hover .kt-heat-n {
+  color: #59e9ac;
+}
+
+/* Styled confirm dialog — covers the panel, matches the tracker theme */
+.kt-confirm {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 24, 0.66);
+  backdrop-filter: blur(2px);
+  border-radius: 42px; /* match the panel card corners */
+}
+.kt-confirm-card {
+  width: calc(100% - 36px);
+  max-width: 260px;
+  background: linear-gradient(180deg, #272b3d 0%, #1f2333 100%);
+  border: 1px solid #3a4360;
+  border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+  padding: 14px;
+  animation: kt-confirm-in 0.14s ease;
+}
+@keyframes kt-confirm-in {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.kt-confirm-msg {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #dde3f0;
+  line-height: 1.45;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.kt-confirm-warn {
+  font-size: 11px;
+  color: #ffd166;
+  background: rgba(255, 209, 102, 0.08);
+  border: 1px solid rgba(255, 209, 102, 0.3);
+  border-radius: 8px;
+  padding: 7px 9px;
+  line-height: 1.4;
+  margin: -4px 0 12px;
+  text-align: center;
+}
+.kt-confirm-input {
+  width: 100%;
+  height: 90px;
+  resize: none;
+  background: #151928; /* input wells sit a step below the fields */
+  border: 1px solid #343c56;
+  border-radius: 10px;
+  color: #f2f5fa;
+  font-size: 10.5px;
+  font-family: Consolas, Menlo, monospace;
+  padding: 7px 8px;
+  margin-bottom: 12px;
+}
+.kt-confirm-input:focus {
+  outline: none;
+  border-color: #59e9ac;
+}
+.kt-confirm-btns {
+  display: flex;
+  gap: 8px;
+}
+.kt-confirm-btns button {
+  flex: 1;
+  border-radius: 11px;
+  padding: 8px 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.kt-confirm-no {
+  background: linear-gradient(180deg, #242838 0%, #1d2130 100%);
+  border: 1px solid #343c56;
+  color: #dde3f0;
+}
+.kt-confirm-no:hover {
+  background: linear-gradient(180deg, #2b3044 0%, #242838 100%);
+  border-color: #46516f;
+}
+.kt-confirm-yes {
+  background: linear-gradient(180deg, #62eeb2 0%, #43cb9c 100%);
+  border: 1px solid #74ffc4;
+  color: #10182a;
+  font-weight: 800;
+}
+.kt-confirm-yes:hover {
+  background: linear-gradient(180deg, #76ffc6 0%, #51d9aa 100%);
+}
+.kt-heat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+}
+/* Board view: numbers in their real on-board positions (8 per row) */
+.kt-heat-grid.kt-heat-board {
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+}
+.kt-heat-board .kt-heat-cell {
+  padding: 2px 1px;
+}
+.kt-heat-board .kt-heat-cell b {
+  font-size: 10.5px;
+}
+.kt-heat-board .kt-heat-cell i {
+  font-size: 8px;
+}
+.kt-heat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 2px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #242838 0%, #1d2130 100%);
+  border: 1px solid #343c56;
+}
+.kt-heat-cell b {
+  font-size: 12px;
+  font-weight: 800;
+}
+.kt-heat-cell i {
+  font-style: normal;
+  font-size: 9px;
+  color: #8b95ae;
+}
+
+/* Hit tier states: red = 2 off, orange = 1 off, green = full hit.
+   Red matches the board's "drawn but missed" numbers; green the active gems. */
+.kt-config.kt-red {
+  background: linear-gradient(180deg, #3c1f2c 0%, #2c1620 100%);
+  border-color: #8a3550;
+}
+.kt-config.kt-red .kt-config-ratio {
+  color: #ff7a91;
+}
+.kt-config.kt-orange {
+  background: linear-gradient(180deg, #392a14 0%, #2a1e0d 100%);
+  border-color: #8a5a1f;
+}
+.kt-config.kt-orange .kt-config-ratio {
+  color: #f0a94e;
+}
+.kt-config.kt-green {
+  background: linear-gradient(180deg, #143a2c 0%, #0e2a20 100%);
+  border-color: #239a66;
+}
+.kt-config.kt-green .kt-config-ratio {
+  color: #62eeb2;
+}
+/* Coloured hit entries (header + numbers): gold = you were betting it, else tier.
+   Gold = won while betting it; red/orange/green = a watch hit. */
+.kt-hit-tier.kt-gold,
+.kt-hit-nums.kt-gold {
+  color: #ffd23f;
+}
+.kt-hit-tier.kt-red,
+.kt-hit-nums.kt-red {
+  color: #ff7a91;
+}
+.kt-hit-tier.kt-orange,
+.kt-hit-nums.kt-orange {
+  color: #f0a94e;
+}
+.kt-hit-tier.kt-green,
+.kt-hit-nums.kt-green {
+  color: #62eeb2;
+}
+/* A bet-hit entry gets a faint gold wash so it stands out in the list. */
+.kt-hit-row.kt-bethit {
+  background: rgba(245, 197, 24, 0.08);
+  border-radius: 5px;
+}
+.kt-config.kt-flash {
+  animation: kt-flash 0.9s ease;
+}
+@keyframes kt-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(89, 233, 172, 0.85);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(89, 233, 172, 0);
+  }
+}
+
+/* Set you're betting now: a bright mint side-bar (distinct from the gold hit). */
+.kt-config.kt-active {
+  position: relative;
+}
+.kt-config.kt-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: #59e9ac;
+  box-shadow: 0 0 6px rgba(89, 233, 172, 0.6);
+}
+/* That set landed a hit while you were betting it → stays a bright gold. */
+.kt-config.kt-goldhit {
+  background: linear-gradient(180deg, #57430a 0%, #3a2c05 100%);
+  border-color: #f5c518;
+  box-shadow: 0 0 12px rgba(245, 197, 24, 0.3);
+}
+.kt-config.kt-goldhit .kt-config-nums {
+  color: #ffe9a3;
+}
+.kt-config.kt-goldhit .kt-config-ratio {
+  color: #ffd23f;
+  text-shadow: 0 0 8px rgba(255, 210, 63, 0.5);
+}
+.kt-config.kt-goldhit .kt-badge {
+  background: #e0a813;
+  color: #2a2109;
+  box-shadow: 0 0 0 1px rgba(255, 226, 120, 0.5);
+}
+.kt-config.kt-goldhit.kt-flash {
+  animation: kt-gold-flash 1.1s ease;
+}
+@keyframes kt-gold-flash {
+  0% {
+    box-shadow: 0 0 12px rgba(245, 197, 24, 0.3), 0 0 0 0 rgba(255, 215, 70, 0.95);
+  }
+  100% {
+    box-shadow: 0 0 12px rgba(245, 197, 24, 0.3), 0 0 0 18px rgba(255, 215, 70, 0);
+  }
+}
+
+
+.kt-empty {
+  font-size: 12px;
+  color: #8b95ae;
+  padding: 12px;
+  text-align: center;
+  line-height: 1.55;
+}
+
+/* Settings */
+.kt-settings {
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kt-settings-title {
+  font-weight: 700;
+  font-size: 12px;
+  color: #59e9ac;
+}
+.kt-settings label {
+  font-size: 12px;
+  color: #c4cde0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.kt-settings input[type="text"],
+.kt-settings input[type="number"] {
+  background: #151928;
+  border: 1px solid #343c56;
+  color: #f2f5fa;
+  border-radius: 8px;
+  padding: 5px 7px;
+  width: 90px;
+  font-size: 12px;
+}
+.kt-settings .kt-check {
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+/* Debug */
+.kt-debug {
+  border-radius: 12px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+.kt-debug-title {
+  font-size: 11px;
+  color: #7e88a4;
+  margin-bottom: 6px;
+}
+.kt-debug pre {
+  font-size: 10px;
+  color: #9fb6e0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0 0 6px;
+  max-height: 90px;
+  overflow: auto;
+}
+
+.kt-hint {
+  font-size: 11px;
+  color: #7e88a4;
+  line-height: 1.5;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.kt-hint b {
+  color: #b7c1d8;
+}
+
+/* ---- Feature wave: multiplier tally, sort chips, hit banner ---- */
+.kt-multi {
+  display: inline-flex;
+  align-items: center;
+  color: #8b95ae;
+  opacity: 0.85;
+  cursor: help;
+}
+.kt-multi:hover {
+  opacity: 1;
+  color: #ffd166;
+}
+
+/* Next-hit oracle: header icon + its popup */
+.kt-oracle {
+  display: inline-flex;
+  align-items: center;
+  color: #8b95ae;
+  opacity: 0.85;
+  cursor: help;
+  margin-left: 6px;
+}
+.kt-oracle:hover {
+  opacity: 1;
+  color: #93b4ff;
+}
+.kt-oracle-live {
+  color: #93b4ff;
+  opacity: 1;
+  filter: drop-shadow(0 0 5px rgba(147, 180, 255, 0.5));
+}
+.kt-pop:has(.kt-orc-list) {
+  max-width: 344px;
+}
+.kt-orc-sub {
+  font-size: 10px;
+  color: #808aa3;
+  margin-bottom: 8px;
+  letter-spacing: 0.2px;
+}
+.kt-orc-sub b {
+  color: #c3cbe0;
+  font-weight: 700;
+}
+.kt-orc-unver {
+  color: #e6b04f;
+  font-weight: 600;
+  cursor: help;
+}
+.kt-orc-more {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 8px;
+  background: #22263a;
+  border: 1px solid #3a4360;
+  border-radius: 7px;
+  color: #a9b2c9;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+.kt-orc-more:hover {
+  border-color: #93b4ff;
+  color: #dbe3fb;
+}
+.kt-orc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #454e6e transparent; /* themed in both docked + float (float reparents to <body>) */
+}
+.kt-orc-list::-webkit-scrollbar {
+  width: 8px;
+}
+.kt-orc-list::-webkit-scrollbar-thumb {
+  background: #454e6e;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.kt-orc-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.kt-orc-card {
+  background: #22263a;
+  border: 1px solid #3a4360;
+  border-radius: 9px;
+  padding: 8px 9px;
+  cursor: pointer;
+}
+.kt-orc-card:hover,
+.kt-orc-card.kt-orc-open {
+  border-color: #4b5680;
+}
+.kt-orc-nums {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #dce1f0;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.kt-orc-nums > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kt-orc-caret {
+  color: #808aa3;
+  font-size: 9px;
+  flex: 0 0 auto;
+}
+.kt-orc-tier {
+  margin-top: 6px;
+}
+.kt-orc-tier:first-child {
+  margin-top: 0;
+}
+.kt-orc-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.kt-orc-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #d7dcec;
+}
+.kt-orc-reset {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.15;
+}
+.kt-orc-reset-lbl {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #808aa3;
+}
+.kt-orc-reset b {
+  font-size: 17px;
+  font-weight: 800;
+  color: #93b4ff;
+  font-variant-numeric: tabular-nums;
+}
+.kt-orc-tline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.kt-orc-mult {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffd166;
+  flex: 0 0 auto;
+}
+.kt-orc-till {
+  font-size: 10px;
+  color: #8f99b2;
+}
+.kt-orc-till::before {
+  content: "· ";
+}
+.kt-orc-chip-past {
+  opacity: 0.4;
+}
+.kt-orc-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  flex: 0 0 auto;
+  letter-spacing: 0.3px;
+}
+.kt-orc-next {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+.kt-orc-tnonce {
+  font-size: 18px;
+  font-weight: 800;
+  color: #eef1fa;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.kt-orc-tgap {
+  font-size: 10px;
+  color: #8f99b2;
+}
+.kt-orc-none {
+  color: #808aa3;
+  font-size: 12px;
+  font-weight: 600;
+}
+.kt-orc-seq {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.kt-orc-chip {
+  font-size: 10px;
+  color: #a9b2c9;
+  background: #1b1f2e;
+  border: 1px solid #313a54;
+  border-radius: 5px;
+  padding: 2px 5px;
+  font-variant-numeric: tabular-nums;
+}
+.kt-orc-warn {
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: #e6c07a;
+  background: rgba(230, 176, 32, 0.08);
+  border: 1px solid rgba(230, 176, 32, 0.3);
+  border-radius: 6px;
+  padding: 7px 8px;
+}
+.kt-pop-row.kt-pop-3 {
+  /* multi flexes left; hit/missed sit snug on the right (1fr columns spread
+     the counts across the whole popup, which read as disconnected) */
+  grid-template-columns: 1fr 52px 64px;
+}
+.kt-pop-row.kt-pop-3 span:nth-child(2),
+.kt-pop-row.kt-pop-3 span:nth-child(3) {
+  text-align: right;
+  white-space: nowrap;
+}
+.kt-pop-foot {
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid #353f59;
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  color: #8b95ae;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+.kt-sort {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.kt-sort .kt-k {
+  margin-right: 3px;
+}
+.kt-sort .kt-win {
+  flex: 1;
+  padding: 5px 0;
+}
+.kt-hitfx {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 48px;
+  z-index: 64;
+  pointer-events: none; /* only the eye button is clickable */
+  background: #262e43;
+  border: 1px solid #353f59;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: kt-hitfx-in 0.18s ease;
+}
+.kt-hitfx-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 8px 7px 13px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #8b95ae;
+  border-bottom: 1px solid #353f59;
+}
+.kt-hitfx-eye {
+  pointer-events: auto;
+  background: transparent;
+  border: none;
+  color: #8b95ae;
+  width: 26px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+.kt-hitfx-eye:hover {
+  color: #59e9ac;
+  background: rgba(255, 255, 255, 0.06);
+}
+.kt-hitfx-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-left: 4px solid transparent; /* inline border-left-color = glow colour */
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #f2f5fa;
+}
+.kt-hitfx-row + .kt-hitfx-row {
+  border-top: 1px solid #353f59;
+}
+.kt-hitfx-nums {
+  letter-spacing: 0.2px;
+}
+.kt-hitfx-chip {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.kt-hitfx-meta {
+  margin-left: auto;
+  font-size: 13.5px;
+  color: #59e9ac;
+  white-space: nowrap;
+}
+@keyframes kt-hitfx-in {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}

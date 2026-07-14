@@ -1,0 +1,11 @@
+# Local editor / tooling config
+.claude/
+CLAUDE.md
+
+# Packaged builds
+*.zip
+
+# OS cruft
+Thumbs.db
+.DS_Store
+desktop.ini
